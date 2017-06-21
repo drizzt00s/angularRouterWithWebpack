@@ -3,13 +3,12 @@ import uirouter from 'angular-ui-router';
 
 var main = angular.module('app', [uirouter]);
 
-var homeCtl = require('../views/home/home.js')(main);
-var aboutCtl = require('../views/about/about.js')(main);
-var productsCtl = require('../views/products/products.js')(main);
+ var homeCtl = require('../views/home/home.js')(main);
+// var visitplaceCtl = require('../views/visitplace/visitplace.js')(main);
+ var productsCtl = require('../views/products/products.js')(main);
 
- //import homeCtl from '../views/home/home.js';
-// import aboutCtl from '../views/about/about.js';
-// import productsCtl from '../views/products/products.js';
+require('./service/globalService.js')(main);
+
 
 main.config(function($stateProvider, $urlRouterProvider){
 	$stateProvider.state('home',{
@@ -17,10 +16,31 @@ main.config(function($stateProvider, $urlRouterProvider){
 		templateUrl:'views/home/home.html',
 		controller:homeCtl
 	})
-	.state('about',{
-		url:'/about',
-		templateUrl:'views/about/about.html',
-		controller:aboutCtl
+	.state('visitplace',{
+		url:'/visitplace',
+		templateUrl:'views/visitplace/visitplace.html',
+		controller:function($scope,myFriendsHotel){
+			$scope.name = "Terry";
+			$scope.place = 'Zhengjiang';
+			$scope.hotel = myFriendsHotel.hotelName($scope);
+			$scope.room = myFriendsHotel.hotelNo($scope);
+		},
+		resolve:{
+			'myFriendsHotel':function($q, $timeout){
+				var deferred = $q.defer();
+				$timeout(function(){
+					deferred.resolve({
+						hotelName:function(){
+							return 'my hotel';
+						},
+						hotelNo:function(){
+							return '212003';
+						}
+					})
+				},5000);
+				return deferred.promise;
+			}
+		}
 	})
 	.state('products',{
 		url:'/products',

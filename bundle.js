@@ -8796,13 +8796,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 var main = __WEBPACK_IMPORTED_MODULE_0_angular___default.a.module('app', [__WEBPACK_IMPORTED_MODULE_1_angular_ui_router___default.a]);
 
-var homeCtl = __webpack_require__(89)(main);
-var aboutCtl = __webpack_require__(90)(main);
-var productsCtl = __webpack_require__(91)(main);
+ var homeCtl = __webpack_require__(89)(main);
+// var visitplaceCtl = require('../views/visitplace/visitplace.js')(main);
+ var productsCtl = __webpack_require__(90)(main);
 
- //import homeCtl from '../views/home/home.js';
-// import aboutCtl from '../views/about/about.js';
-// import productsCtl from '../views/products/products.js';
+__webpack_require__(91)(main);
+
 
 main.config(function($stateProvider, $urlRouterProvider){
 	$stateProvider.state('home',{
@@ -8810,10 +8809,31 @@ main.config(function($stateProvider, $urlRouterProvider){
 		templateUrl:'views/home/home.html',
 		controller:homeCtl
 	})
-	.state('about',{
-		url:'/about',
-		templateUrl:'views/about/about.html',
-		controller:aboutCtl
+	.state('visitplace',{
+		url:'/visitplace',
+		templateUrl:'views/visitplace/visitplace.html',
+		controller:function($scope,myFriendsHotel){
+			$scope.name = "Terry";
+			$scope.place = 'Zhengjiang'
+			$scope.hotel = myFriendsHotel.hotelName($scope);
+			$scope.room = myFriendsHotel.hotelNo($scope);
+		},
+		resolve:{
+			'myFriendsHotel':function($q, $timeout){
+				var deferred = $q.defer();
+				$timeout(function(){
+					deferred.resolve({
+						hotelName:function(){
+							return 'my hotel';
+						},
+						hotelNo:function(){
+							return '212003';
+						}
+					})
+				},5000);
+				return deferred.promise;
+			}
+		}
 	})
 	.state('products',{
 		url:'/products',
@@ -44490,10 +44510,12 @@ module.exports = function(m){
 /***/ (function(module, exports) {
 
 module.exports = function(m){
-	m.controller('about', function($scope){
-		console.log('about');
+	m.controller('products', function($scope){
+	console.log('products');
 	});
 };
+
+
 
 
 
@@ -44502,12 +44524,23 @@ module.exports = function(m){
 /***/ (function(module, exports) {
 
 module.exports = function(m){
-	m.controller('products', function($scope){
-	console.log('products');
+	m.factory('accommodation', function($timeout){
+		return {
+			hotelName:function(scope){
+				$timeout(function(){
+					scope.hotel = 'some hotel';
+				}, 3000)
+				return '---';
+			},
+			hotelNo:function(scope){
+				$timeout(function(){
+					scope.room = '1013';
+				}, 3000);
+				return '---';
+			}
+		};
 	});
 };
-
-
 
 
 
